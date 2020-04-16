@@ -1,0 +1,244 @@
+:root {
+    --hex-size: 100px;
+    --color-wheat: rgb(243, 226, 36);
+    --color-sheep: rgb(164, 248, 164);
+    --color-ore: lightgrey;
+    --color-brick: rgb(243, 123, 102);
+    --color-wood: rgb(34, 187, 100);
+    --color-desert: rgb(255, 234, 112);
+}
+
+#board{
+    margin: 20px auto;
+    width: 500px;
+
+}
+
+/* Tiles */
+
+.hex{
+    display: inline-block;
+    width: 100px;
+    height: 120px;
+    text-align: center;
+}
+
+.hex .top, .hex .mid, .hex .bot{
+    display: flex;
+}
+
+.hex .top, .hex .bot{
+    height: 33px;
+}
+
+.hex>.mid{
+    height: calc(120px - 66px);
+    /* border-left: 2px solid white; */
+    /* border-right: 2px solid white; */
+}
+
+.hex .top .left, .hex .top .rig,
+.hex .mid .left, .hex .mid .mid, .hex .mid .rig,
+.hex .bot .left, .hex .bot .rig{
+    display: inline-block;
+    height: 100%;
+}
+
+.hex .top .left, .hex .top .rig,
+.hex .bot .left, .hex .bot .rig{
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: relative;
+}
+
+.hex .mid .left, .hex .mid .mid, .hex .mid .rig{
+    width: 33.3%;
+}
+
+.hex .top .left{
+    border-width: 0 0 33px 50px;
+    border-color:transparent transparent fuchsia transparent;
+    /* transform: translate(2px, 2px); */
+}
+
+.hex .top .rig{
+    border-width: 33px 0 0 50px;
+    border-color: transparent transparent transparent fuchsia;
+    /* transform: translate(-2px, 2px); */
+}
+
+.hex .bot .left{
+    border-width: 0 50px 33px 0;
+    border-color: transparent fuchsia transparent transparent;
+    /* transform: translate(2px, 0px); */
+}
+
+.hex .bot .rig{
+    border-width: 33px 50px 0 0;
+    border-color: fuchsia transparent transparent transparent;
+    /* transform: translate(0px, -2px); */
+}
+
+
+.hex .number{
+    border-radius: 50%;
+    background-color: white;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    line-height: 30px;
+    margin-top: 10px;
+}
+
+.hex[data-number='6'], .hex[data-number='8']{
+    font-size: 21px;
+    color: red;
+}
+.hex[data-number='5'], .hex[data-number='9']{
+    font-size: 18px;
+}
+.hex[data-number='4'], .hex[data-number='10']{
+    font-size: 15px;
+}
+.hex[data-number='2'], .hex[data-number='12']{
+    font-size: 12px;
+}
+
+
+/* Rows */
+
+.board-row{
+    display: flex;
+    position: relative;
+}
+
+.board-row[data-row='0']{
+    transform: translate(var(--hex-size),0);
+}
+
+.board-row[data-row='1']{
+    transform: translate(calc(var(--hex-size)/2),-33px);
+}
+
+.board-row[data-row='2']{
+    transform: translate(0,-66px);
+}
+
+.board-row[data-row='3']{
+    transform: translate(calc(var(--hex-size)/2),-99px);
+}
+
+.board-row[data-row='4']{
+    transform: translate(var(--hex-size),-132px);
+}
+
+/* Sheep */
+
+.hex.sheep .mid{
+    background-color: var(--color-sheep);
+}
+.hex.sheep .top .left{
+    border-bottom-color: var(--color-sheep);
+}
+.hex.sheep .top .rig{
+    border-left-color: var(--color-sheep);
+}
+.hex.sheep .bot .left{
+    border-right-color: var(--color-sheep);
+}
+.hex.sheep .bot .rig{
+    border-top-color: var(--color-sheep);
+}
+
+/* Ore */
+
+.hex.ore .mid{
+    background-color: var(--color-ore);
+}
+.hex.ore .top .left{
+    border-bottom-color: var(--color-ore);
+}
+.hex.ore .top .rig{
+    border-left-color: var(--color-ore);
+}
+.hex.ore .bot .left{
+    border-right-color: var(--color-ore);
+}
+.hex.ore .bot .rig{
+    border-top-color: var(--color-ore);
+}
+
+/* Wheat */
+
+.hex.wheat .mid{
+    background-color: var(--color-wheat);
+}
+.hex.wheat .top .left{
+    border-bottom-color: var(--color-wheat);
+}
+.hex.wheat .top .rig{
+    border-left-color: var(--color-wheat);
+}
+.hex.wheat .bot .left{
+    border-right-color: var(--color-wheat);
+}
+.hex.wheat .bot .rig{
+    border-top-color: var(--color-wheat);
+}
+
+
+/* Brick */
+
+.hex.brick .mid{
+    background-color: var(--color-brick);
+}
+.hex.brick .top .left{
+    border-bottom-color: var(--color-brick);
+}
+.hex.brick .top .rig{
+    border-left-color: var(--color-brick);
+}
+.hex.brick .bot .left{
+    border-right-color: var(--color-brick);
+}
+.hex.brick .bot .rig{
+    border-top-color: var(--color-brick);
+}
+
+
+/* Wood */
+
+.hex.wood .mid{
+    background-color: var(--color-wood);
+}
+.hex.wood .top .left{
+    border-bottom-color: var(--color-wood);
+}
+.hex.wood .top .rig{
+    border-left-color: var(--color-wood);
+}
+.hex.wood .bot .left{
+    border-right-color: var(--color-wood);
+}
+.hex.wood .bot .rig{
+    border-top-color: var(--color-wood);
+}
+
+/* Desert */
+
+.hex.desert .mid{
+    background-color: var(--color-desert);
+}
+.hex.desert .top .left{
+    border-bottom-color: var(--color-desert);
+}
+.hex.desert .top .rig{
+    border-left-color: var(--color-desert);
+}
+.hex.desert .bot .left{
+    border-right-color: var(--color-desert);
+}
+.hex.desert .bot .rig{
+    border-top-color: var(--color-desert);
+}
