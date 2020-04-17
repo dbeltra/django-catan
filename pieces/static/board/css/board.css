@@ -1,0 +1,360 @@
+:root {
+    /* apotheme^2 + (height/4)^2 = (height/2)^2 */
+    /* https://www.omnicalculator.com/math/hexagon#diagonals-of-a-hexagon */
+
+    --hex-apotheme: 51.96px;
+
+    --hex-width: calc(var(--hex-apotheme) * 2);
+    --hex-height: 120px;
+
+    --hex-triangle-width: calc(var(--hex-width)/2);
+    --hex-triangle-height: calc(var(--hex-height)/4);
+    --hex-triangle-height-negative: calc(var(--hex-triangle-height) * -1);
+
+    --number-chip-size: 35px;
+
+    --color-wheat: rgb(243, 226, 36);
+    --color-sheep: rgb(164, 248, 164);
+    --color-ore: lightgrey;
+    --color-brick: rgb(243, 123, 102);
+    --color-wood: rgb(34, 187, 100);
+    --color-desert: rgb(255, 234, 112);
+
+}
+
+#board{
+    margin: 20px auto;
+    width: calc(var(--hex-width) * 5);
+
+}
+
+/* Tiles */
+
+.hex{
+    display: inline-block;
+    width: var(--hex-width);
+    height: var(--hex-height);
+    text-align: center;
+}
+
+.hex .top, .hex .mid, .hex .bot{
+    display: flex;
+    position: relative;
+}
+
+.hex .top, .hex .bot{
+    height: var(--hex-triangle-height);
+}
+
+.hex>.mid{
+    height: calc(var(--hex-height) - calc(var(--hex-triangle-height) * 2));
+    /* border-left: 2px solid white; */
+    /* border-right: 2px solid white; */
+}
+
+.hex .top .left, .hex .top .rig,
+.hex .mid .left, .hex .mid .mid, .hex .mid .rig,
+.hex .bot .left, .hex .bot .rig{
+    display: inline-block;
+    height: 100%;
+}
+
+.hex .top .left, .hex .top .rig,
+.hex .bot .left, .hex .bot .rig{
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: relative;
+}
+
+.hex .mid .left, .hex .mid .mid, .hex .mid .rig{
+    width: 33.3%;
+}
+
+.hex .top .left{
+    border-width: 0 0 var(--hex-triangle-height) var(--hex-triangle-width);
+    border-color:transparent transparent fuchsia transparent;
+    /* transform: translate(2px, 2px); */
+}
+
+.hex .top .rig{
+    border-width: var(--hex-triangle-height) 0 0 var(--hex-triangle-width);
+    border-color: transparent transparent transparent fuchsia;
+    /* transform: translate(-2px, 2px); */
+}
+
+.hex .bot .left{
+    border-width: 0 var(--hex-triangle-width) var(--hex-triangle-height) 0;
+    border-color: transparent fuchsia transparent transparent;
+    /* transform: translate(2px, 0px); */
+}
+
+.hex .bot .rig{
+    border-width: var(--hex-triangle-height) var(--hex-triangle-width) 0 0;
+    border-color: fuchsia transparent transparent transparent;
+    /* transform: translate(0px, -2px); */
+}
+
+.hex .corner{
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.hex .corner:hover{
+    border-color: red;
+    cursor: pointer;
+}
+
+.hex .corner.tl{
+    bottom: 0px;
+    left: 0px;
+    transform: translate(-50%, 50%);
+}
+.hex .corner.tt{
+    top: 0px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.hex .corner.tr{
+    bottom: 0px;
+    right: 0px;
+    transform: translate(50%, 50%);
+}
+
+
+.hex .corner.bl{
+    top: 0px;
+    left: 0px;
+    transform: translate(-50%, -50%);
+}
+.hex .corner.bb{
+    bottom: 0px;
+    left: 50%;
+    transform: translate(-50%, 50%);
+}
+.hex .corner.br{
+    top: 0px;
+    right: 0px;
+    transform: translate(50%, -50%);
+}
+
+.hex .side{
+    width: calc(var(--hex-height) / 3);
+    height: 10px;
+    outline: 3px solid transparent;
+    position: absolute;
+    z-index: 1;
+}
+
+.hex .side:hover{
+    outline-color: red;
+    cursor: pointer;
+}
+
+.hex .side.tl{
+    left: 0px;
+    bottom: 0px;
+    transform-origin: left;
+    transform: rotate(-30deg) translate(10px,5px);
+}
+.hex .side.tr{
+    right: 0px;
+    bottom: 0px;
+    transform-origin: right;
+    transform: rotate(30deg) translate(-10px,5px);
+}
+.hex .side.mr{
+    right: 0px;
+    top: 0px;
+    transform-origin: right;
+    transform: rotate(-90deg )translate(-5px,-0px);
+}
+.hex .side.ml{
+    left: 0px;
+    top: 0px;
+    transform-origin: left;
+    transform: rotate(90deg) translate(5px,0px);
+}
+.hex .side.bl{
+    left: 0px;
+    top: 0px;
+    transform-origin: left;
+    transform: rotate(30deg) translate(10px,-5px);
+}
+.hex .side.br{
+    right: 0px;
+    top: 0px;
+    transform-origin: right;
+    transform: rotate(-30deg) translate(-10px,-5px);
+}
+
+
+
+.hex .number{
+    border-radius: 50%;
+    background-color: white;
+    width: var(--number-chip-size);
+    height: var(--number-chip-size);
+    display: inline-block;
+    line-height: var(--number-chip-size);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.hex[data-number='6'], .hex[data-number='8']{
+    font-size: 21px;
+    color: red;
+}
+.hex[data-number='5'], .hex[data-number='9']{
+    font-size: 18px;
+}
+.hex[data-number='4'], .hex[data-number='10']{
+    font-size: 15px;
+}
+.hex[data-number='2'], .hex[data-number='12']{
+    font-size: 12px;
+}
+
+
+/* Rows */
+
+.board-row{
+    display: flex;
+    position: relative;
+}
+
+.board-row[data-row='0']{
+    transform: translate(var(--hex-width),0);
+}
+
+.board-row[data-row='1']{
+    transform: translate(calc(var(--hex-width)/2), calc(var(--hex-triangle-height-negative) * 1));
+}
+
+.board-row[data-row='2']{
+    transform: translate(0,calc(var(--hex-triangle-height-negative) * 2));
+}
+
+.board-row[data-row='3']{
+    transform: translate(calc(var(--hex-width)/2),calc(var(--hex-triangle-height-negative) * 3));
+}
+
+.board-row[data-row='4']{
+    transform: translate(var(--hex-width),calc(var(--hex-triangle-height-negative) * 4));
+}
+
+/* Sheep */
+
+.hex.sheep .mid{
+    background-color: var(--color-sheep);
+}
+.hex.sheep .top .left{
+    border-bottom-color: var(--color-sheep);
+}
+.hex.sheep .top .rig{
+    border-left-color: var(--color-sheep);
+}
+.hex.sheep .bot .left{
+    border-right-color: var(--color-sheep);
+}
+.hex.sheep .bot .rig{
+    border-top-color: var(--color-sheep);
+}
+
+/* Ore */
+
+.hex.ore .mid{
+    background-color: var(--color-ore);
+}
+.hex.ore .top .left{
+    border-bottom-color: var(--color-ore);
+}
+.hex.ore .top .rig{
+    border-left-color: var(--color-ore);
+}
+.hex.ore .bot .left{
+    border-right-color: var(--color-ore);
+}
+.hex.ore .bot .rig{
+    border-top-color: var(--color-ore);
+}
+
+/* Wheat */
+
+.hex.wheat .mid{
+    background-color: var(--color-wheat);
+}
+.hex.wheat .top .left{
+    border-bottom-color: var(--color-wheat);
+}
+.hex.wheat .top .rig{
+    border-left-color: var(--color-wheat);
+}
+.hex.wheat .bot .left{
+    border-right-color: var(--color-wheat);
+}
+.hex.wheat .bot .rig{
+    border-top-color: var(--color-wheat);
+}
+
+
+/* Brick */
+
+.hex.brick .mid{
+    background-color: var(--color-brick);
+}
+.hex.brick .top .left{
+    border-bottom-color: var(--color-brick);
+}
+.hex.brick .top .rig{
+    border-left-color: var(--color-brick);
+}
+.hex.brick .bot .left{
+    border-right-color: var(--color-brick);
+}
+.hex.brick .bot .rig{
+    border-top-color: var(--color-brick);
+}
+
+
+/* Wood */
+
+.hex.wood .mid{
+    background-color: var(--color-wood);
+}
+.hex.wood .top .left{
+    border-bottom-color: var(--color-wood);
+}
+.hex.wood .top .rig{
+    border-left-color: var(--color-wood);
+}
+.hex.wood .bot .left{
+    border-right-color: var(--color-wood);
+}
+.hex.wood .bot .rig{
+    border-top-color: var(--color-wood);
+}
+
+/* Desert */
+
+.hex.desert .mid{
+    background-color: var(--color-desert);
+}
+.hex.desert .top .left{
+    border-bottom-color: var(--color-desert);
+}
+.hex.desert .top .rig{
+    border-left-color: var(--color-desert);
+}
+.hex.desert .bot .left{
+    border-right-color: var(--color-desert);
+}
+.hex.desert .bot .rig{
+    border-top-color: var(--color-desert);
+}
