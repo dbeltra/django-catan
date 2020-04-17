@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from board.board import Board
+from pieces.board import Board
 
 def show_board(request):
     board = Board()
