@@ -12,9 +12,9 @@
 
 <section id="board">
 {% for row in board %}
-<div class="board-row" data-row="{{forloop.counter0}}" style="z-index:{{forloop.counter}}">
+<div class="board-row" data-row="{{row.number}}" style="z-index:{{forloop.counter}}">
 
-    {% for tile in row %}
+    {% for tile in row.tiles %}
     <div class="hex {{tile.terrain.name}}"
         data-position="{{tile.position}}"
         data-row="{{tile.row}}"

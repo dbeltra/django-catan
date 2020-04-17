@@ -44,14 +44,15 @@ class Board:
                 tile = Tile(board=self, terrain=piece, number=None, position=(row_idx,col_idx))
                 self.tiles.append(tile)
 
-        self.init_numbers()
+        self.init_numbers_official()
+        self.init_sea()
 
     def __del__(self):
         for tile in self.tiles:
             del tile
         print('board erased')
 
-    def init_numbers(self):
+    def init_numbers_official(self):
         self.numbers = TILES_NUMBERS.copy()
 
         next_tile = self.tiles[0]
@@ -61,19 +62,11 @@ class Board:
             self.put_number_in_tile(current_tile)
             next_tile, direction = self.get_next_tile(current_tile, direction)
 
-
-
     def get_next_tile(self, tile, direction):
-        print('-------------------------')
-        print(f'current tile {tile}')
         neighbors = tile.find_neighbors()
         next_tile = neighbors[direction]
-        print(f'try next tile {next_tile}, direction followed {direction}')
-        print(f'neighbors to the candidate tile are {neighbors}')
 
         if next_tile is None or next_tile.number is not None:
-            print(f'theres no neighbours in the {direction} direction, or they already have a number')  
-            
             current_direction_array_idx = TILES_DIRECTION_DISTRIBUTION.index(direction)
 
             for number_directions_options in range(1, len(TILES_DIRECTION_DISTRIBUTION)):
@@ -82,21 +75,14 @@ class Board:
                     next_direction_array_idx = next_direction_array_idx - len(TILES_DIRECTION_DISTRIBUTION)
                        
                 new_direction = TILES_DIRECTION_DISTRIBUTION[next_direction_array_idx]
-                print(f'next should be {neighbors[new_direction]}, direction followed {new_direction}')
                 next_tile = neighbors[new_direction]
 
                 if next_tile is not None and next_tile.number is  None:
                     return next_tile, new_direction
-                else:
-                    print('but its None or already numbered, lets try another direction')
-
-            print(f'theres no possible neighbours, END')  
             return None, None
         else:
-            print(f'next tile found {next_tile}, direction followed {direction}')
             return next_tile, direction
         
-
     def put_number_in_tile(self,tile):
         if tile.terrain is not Terrain.desert:
             tile.number = self.numbers.pop(0)
@@ -106,15 +92,41 @@ class Board:
     def get_tile_by_position(self, position):
         matching_tile = None
         for tile in self.tiles:
-            if tile.position == position:
+            if tile.position == position and tile.terrain is not Terrain.sea:
                 matching_tile = tile
         return matching_tile
 
+    def init_sea(self):
+        sea_tiles = []
+        positions_created = []
+        nrows = self.num_rows
+        for tile in self.tiles:
+            neighbors = tile.find_neighbors()
+            print('-----')
+            print(f'analizing tile {tile.position}')
+            print(f'neighbors are {neighbors}')
+            for n in neighbors:
+                if neighbors[n] is None:
+                    print(f'No neighbors in {n} position')
+                    position = tile.find_neighbor_in_direction(n)['position']
+                    print(f'create a new tile in {position}')
+                    if position not in positions_created:
+                        positions_created.append(position)
+                        sea_tile = Tile(board=self, terrain=Terrain.sea, number=None, position=position)
+                        sea_tiles.append(sea_tile)
+
+        self.tiles += sea_tiles
+
     def get_tiles_row(self, row):
         match_row = []
+        highest_col = -50
         for tile in self.tiles:
             if tile.row == row:
-                match_row.append(tile)
+                if tile.col > highest_col:
+                    match_row.append(tile)
+                    highest_col = tile.col
+                else:
+                    match_row.insert(0,tile)
         return match_row
 
     def print_board(self):
@@ -143,37 +155,59 @@ class Tile:
 
     def find_neighbors(self):
         self.neighbors = {
-            'tl': None,
-            'tr': None,
-            'r': self.board.get_tile_by_position((self.row, self.col+1)),
-            'br': None,
-            'bl': None,
-            'l': self.board.get_tile_by_position((self.row, self.col-1)),
+            'tl': self.find_neighbor_in_direction('tl')['tile'],
+            'tr': self.find_neighbor_in_direction('tr')['tile'],
+            'r': self.find_neighbor_in_direction('r')['tile'],
+            'br': self.find_neighbor_in_direction('br')['tile'],
+            'bl': self.find_neighbor_in_direction('bl')['tile'],
+            'l': self.find_neighbor_in_direction('l')['tile'],
         }
+
+        return self.neighbors
+
+    def find_neighbor_in_direction(self, direction):
+        neighbor = {}
+        if direction == 'r':
+            position = (self.row, self.col+1)
+        if direction == 'l':
+            position = (self.row, self.col-1)
 
         nrows = self.board.num_rows
         if self.row < (nrows-1)/2:
-            print('im in the top')
-            self.neighbors['tl'] = self.board.get_tile_by_position((self.row-1, self.col-1))
-            self.neighbors['tr'] = self.board.get_tile_by_position((self.row-1, self.col))
-            self.neighbors['br'] = self.board.get_tile_by_position((self.row+1, self.col+1))
-            self.neighbors['bl'] = self.board.get_tile_by_position((self.row+1, self.col))
+            if direction == 'tl':
+                position = (self.row-1, self.col-1)
+            if direction == 'tr':
+                position = (self.row-1, self.col)
+            if direction == 'br':
+                position = (self.row+1, self.col+1)
+            if direction == 'bl':
+                position = (self.row+1, self.col)
 
         if self.row == (nrows-1)/2:
-            print('im in the mid')
-            self.neighbors['tl'] = self.board.get_tile_by_position((self.row-1, self.col-1))
-            self.neighbors['tr'] = self.board.get_tile_by_position((self.row-1, self.col))
-            self.neighbors['br'] = self.board.get_tile_by_position((self.row+1, self.col))
-            self.neighbors['bl'] = self.board.get_tile_by_position((self.row+1, self.col-1))
+            if direction == 'tl':
+                position = (self.row-1, self.col-1)
+            if direction == 'tr':
+                position = (self.row-1, self.col)
+            if direction == 'br':
+                position = (self.row+1, self.col)
+            if direction == 'bl':
+                position = (self.row+1, self.col-1)
 
         if self.row > (nrows-1)/2:
-            print('im in the bottom')
-            self.neighbors['tl'] = self.board.get_tile_by_position((self.row-1, self.col))
-            self.neighbors['tr'] = self.board.get_tile_by_position((self.row-1, self.col+1))
-            self.neighbors['br'] = self.board.get_tile_by_position((self.row+1, self.col))
-            self.neighbors['bl'] = self.board.get_tile_by_position((self.row+1, self.col-1))      
+            if direction == 'tl':
+                position = (self.row-1, self.col)
+            if direction == 'tr':
+                position = (self.row-1, self.col+1)
+            if direction == 'br':
+                position = (self.row+1, self.col)
+            if direction == 'bl':
+                position = (self.row+1, self.col-1)
 
-        return self.neighbors
+        neighbor['position'] = position
+        neighbor['tile'] = self.board.get_tile_by_position(position)
+
+        return neighbor
+
 
     def is_border(self):
         if None in self.neighbors.values():
@@ -192,6 +226,7 @@ class Terrain(Enum):
     sheep = 'sheep'
     ore = 'ore'
     desert = 'desert'
+    sea = 'sea'
 
     def __repr__(self):
         return self.value

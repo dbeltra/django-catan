@@ -19,12 +19,13 @@
     --color-brick: rgb(243, 123, 102);
     --color-wood: rgb(34, 187, 100);
     --color-desert: rgb(255, 234, 112);
+    --color-sea: rgb(61, 187, 236);
 
 }
 
 #board{
     margin: 20px auto;
-    width: calc(var(--hex-width) * 5);
+    width: calc(var(--hex-width) * 7);
 
 }
 
@@ -74,13 +75,11 @@
 .hex .top .left{
     border-width: 0 0 var(--hex-triangle-height) var(--hex-triangle-width);
     border-color:transparent transparent fuchsia transparent;
-    /* transform: translate(2px, 2px); */
 }
 
 .hex .top .rig{
     border-width: var(--hex-triangle-height) 0 0 var(--hex-triangle-width);
     border-color: transparent transparent transparent fuchsia;
-    /* transform: translate(-2px, 2px); */
 }
 
 .hex .bot .left{
@@ -104,7 +103,7 @@
     z-index: 1;
 }
 
-.hex .corner:hover{
+.hex:not(.sea) .corner:hover{
     border-color: red;
     cursor: pointer;
 }
@@ -150,7 +149,7 @@
     z-index: 1;
 }
 
-.hex .side:hover{
+.hex:not(.sea) .side:hover{
     outline-color: red;
     cursor: pointer;
 }
@@ -229,24 +228,32 @@
     position: relative;
 }
 
+.board-row[data-row='-1']{
+    transform: translate(calc(var(--hex-width) + calc(var(--hex-width)/2)), calc(var(--hex-triangle-height-negative) * 0));
+}
+
 .board-row[data-row='0']{
-    transform: translate(var(--hex-width),0);
+    transform: translate(calc(var(--hex-width)), calc(var(--hex-triangle-height-negative) * 1));
 }
 
 .board-row[data-row='1']{
-    transform: translate(calc(var(--hex-width)/2), calc(var(--hex-triangle-height-negative) * 1));
+    transform: translate(calc(var(--hex-width)/2), calc(var(--hex-triangle-height-negative) * 2));
 }
 
 .board-row[data-row='2']{
-    transform: translate(0,calc(var(--hex-triangle-height-negative) * 2));
+    transform: translate(0,calc(var(--hex-triangle-height-negative) * 3));
 }
 
 .board-row[data-row='3']{
-    transform: translate(calc(var(--hex-width)/2),calc(var(--hex-triangle-height-negative) * 3));
+    transform: translate(calc(var(--hex-width)/2),calc(var(--hex-triangle-height-negative) * 4));
 }
 
 .board-row[data-row='4']{
-    transform: translate(var(--hex-width),calc(var(--hex-triangle-height-negative) * 4));
+    transform: translate(var(--hex-width),calc(var(--hex-triangle-height-negative) * 5));
+}
+
+.board-row[data-row='5']{
+    transform: translate(calc(var(--hex-width) + calc(var(--hex-width)/2)),calc(var(--hex-triangle-height-negative) * 6));
 }
 
 /* Sheep */
@@ -357,4 +364,22 @@
 }
 .hex.desert .bot .rig{
     border-top-color: var(--color-desert);
+}
+
+/* Sea */
+
+.hex.sea .mid{
+    background-color: var(--color-sea);
+}
+.hex.sea .top .left{
+    border-bottom-color: var(--color-sea);
+}
+.hex.sea .top .rig{
+    border-left-color: var(--color-sea);
+}
+.hex.sea .bot .left{
+    border-right-color: var(--color-sea);
+}
+.hex.sea .bot .rig{
+    border-top-color: var(--color-sea);
 }
