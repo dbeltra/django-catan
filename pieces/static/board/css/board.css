@@ -23,6 +23,10 @@
 
 }
 
+body{
+    font-family: 'Open Sans', sans-serif;
+}
+
 #board{
     margin: 20px auto;
     width: calc(var(--hex-width) * 7);
@@ -36,6 +40,14 @@
     width: var(--hex-width);
     height: var(--hex-height);
     text-align: center;
+    position: relative;
+}
+.hex.sea{
+    z-index: -1;
+}
+
+.hex:not(.sea){
+    z-index: 1;
 }
 
 .hex .top, .hex .mid, .hex .bot{
@@ -367,7 +379,6 @@
 }
 
 /* Sea */
-
 .hex.sea .mid{
     background-color: var(--color-sea);
 }
